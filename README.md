@@ -8,7 +8,7 @@ $ git git@github.com:pilotpirxie/online-now-redis.git
 ```
 or:
 ```
-$ wget https://github.com/pilotpirxie/online-now-redis/archive/1.0.0.zip
+$ wget https://github.com/pilotpirxie/online-now-redis/archive/1.1.0.zip
 ```
 install dependencies:
 ```
@@ -20,21 +20,34 @@ node app.js
 ```
 
 ### Configuration
-```
+```js
 // redis server hostname and port
 // leave empty for default (localhost, 6379)
 const redisClient = redis.createClient();
-
-// app port
-const port = process.env.PORT || 8080;
 
 // time to live for ip entry
 const TTL = 30;
 ```
 
+### Usage
+```js
+// require module
+const onlineNowRedis = require('./online-now-redis/online-now-redis');
+
+// and use it as middleware
+app.use(onlineNowRedis.ping);
+
+// and call to get total online count 
+app.get('/', (req, res) => {
+  onlineNowRedis.count(req, res, function(httpStatus, data){
+    res.status(httpStatus).send(data);
+  });
+});
+```
+
 ### How to ping and retrieve data?
 Use Ajax GET request to ping and retrieve information.
-```
+```js
 setInterval(() => {
   $.get('/ping');
   $.get('/', (res)=>{
