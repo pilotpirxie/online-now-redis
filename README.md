@@ -35,11 +35,12 @@ const TTL = 30;
 ### How to ping and retrieve data?
 Use Ajax GET request to ping and retrieve information.
 ```
-$.get('/ping');
-
-$.get('/', (res)=>{
-  console.log(JSON.parse(res));
-});
+setInterval(() => {
+  $.get('/ping');
+  $.get('/', (res)=>{
+    console.log(JSON.parse(res));
+  });
+}, 10000);
 ```
 ### License
 ```
