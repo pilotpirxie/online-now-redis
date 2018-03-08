@@ -4,7 +4,6 @@
   "description": "Check how many of users are now on your website.",
   "main": "app.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "redis": "^2.8.0"
   },

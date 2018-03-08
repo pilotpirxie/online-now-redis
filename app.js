@@ -1,16 +1,13 @@
 const express = require('express');
-const {promisify} = require('util');
 const redis = require('redis');
 const redisClient = redis.createClient();
 const app = express();
 
-// config
+// app port
 const port = process.env.PORT || 8080;
-const TTL = 30;
 
-redisClient.on("error", (err) => {
-  console.log(`Error ${err}`);
-});
+// time to live for ip entry
+const TTL = 30;
 
 // retrieve information
 // and get number of people on site
@@ -18,9 +15,10 @@ app.get('/', (req, res) => {
   redisClient.keys('client:_*', (err, data) => {
     if (!err) {
       let online = data.filter(n => n);
-      res.send(`{"status": "ok", "count":"${online.length}"}`);
+      res.send(JSON.stringify({status: "ok", count: online.length}));
     } else {
-      res.send(`{"status":"error", "info":"${err}"}`)
+      console.log(err);
+      res.status(500).send(JSON.stringify({status: "error"}));
     }
   });
 });
@@ -32,14 +30,15 @@ app.get('/ping', (req, res) => {
 
   // insert or update key with client ip and timestamp as data
   // setex client:_127.0.0.1 <TTL> 1520541641402
-  redisClient.set('client:_' + ip, Date.now(), 'EX', TTL, (err, res) => {
+  redisClient.set('client:_' + ip, Date.now(), 'EX', TTL, (err, data) => {
     if (!err) {
       console.log(`${ip} -> ${Date.now()}`);
+      res.send(JSON.stringify({status: "ok"}));
     } else {
       console.log(err.toString());
+      res.status(500).send(JSON.stringify({status: "error"}));
     }
   });
-  res.sendStatus(200);
 });
 
 app.listen(port, () => {
