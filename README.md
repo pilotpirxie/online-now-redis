@@ -45,15 +45,21 @@ app.get('/', (req, res) => {
 });
 ```
 
-### How to ping and retrieve data?
+### Manually ping 
 Use Ajax GET request to ping and retrieve information.
 ```js
+// on client side
 setInterval(() => {
   $.get('/ping');
   $.get('/', (res)=>{
     console.log(JSON.parse(res));
   });
 }, 10000);
+
+// on server side
+app.get('/ping', (req, res) => {
+  onlineNowRedis.ping(req, res, callback, TTL);
+});
 ```
 ### License
 ```
